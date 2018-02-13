@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CAFU.Core.Data.Entity;
 using UnityEngine;
+
+// ReSharper disable ArrangeAccessorOwnerBody
 
 #pragma warning disable 649
 
@@ -10,7 +13,19 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    public interface IGenericEntity<out TKey, out TValue> : IGenericEntity {
+    public interface IGenericEntity<out TValue> : IGenericEntity {
+
+        TValue Value { get; }
+
+    }
+
+    public interface IGenericEntity<out TKey, out TValue> : IGenericEntity<TValue> {
+
+        TKey Key { get; }
+
+    }
+
+    public interface IGenericPairEntity<out TKey, out TValue> : IGenericEntity {
 
         TKey Key { get; }
 
@@ -18,15 +33,31 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    // AOT 問題回避のため、 TKey, TValue を渡しています
-    public interface IGenericListEntity<TKey, TValue, TGenericEntity> : IGenericEntity
-        where TGenericEntity : IGenericEntity<TKey, TValue> {
+    public interface IGenericListEntity<TValue> : IGenericEntity {
 
-        IList<TGenericEntity> List { get; }
+        IList<TValue> List { get; }
 
     }
 
-    public class GenericEntity<TKey, TValue> : IGenericEntity<TKey, TValue> {
+    [Serializable]
+    public class GenericEntity : IGenericEntity {
+
+    }
+
+    public class GenericEntity<TValue> : GenericEntity, IGenericEntity<TValue> {
+
+        [SerializeField]
+        private TValue value;
+
+        public TValue Value {
+            get {
+                return this.value;
+            }
+        }
+
+    }
+
+    public class GenericPairEntity<TKey, TValue> : GenericEntity, IGenericPairEntity<TKey, TValue> {
 
         [SerializeField]
         private TKey key;
@@ -48,7 +79,40 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    public class ScriptableObjectGenericEntity<TKey, TValue> : ScriptableObject, IGenericEntity<TKey, TValue> {
+    public class GenericListEntity<TValue> : GenericEntity, IGenericListEntity<TValue> {
+
+        [SerializeField]
+        private List<TValue> list;
+
+        public IList<TValue> List => this.list;
+
+    }
+
+    public class GenericEntityList<TEntity> : GenericListEntity<TEntity> where TEntity : IGenericEntity {
+
+    }
+
+    public class GenericPairEntityList<TKey, TValue, TGenericPairEntity> : GenericListEntity<TGenericPairEntity> where TGenericPairEntity : IGenericPairEntity<TKey, TValue> {
+
+    }
+
+    public abstract class ScriptableObjectGenericEntity : ScriptableObject, IGenericEntity {
+    }
+
+    public class ScriptableObjectGenericEntity<TValue> : ScriptableObjectGenericEntity, IGenericEntity<TValue> {
+
+        [SerializeField]
+        private TValue value;
+
+        public TValue Value {
+            get {
+                return this.value;
+            }
+        }
+
+    }
+
+    public class ScriptableObjectGenericPairEntity<TKey, TValue> : ScriptableObjectGenericEntity, IGenericPairEntity<TKey, TValue> {
 
         [SerializeField]
         private TKey key;
@@ -70,31 +134,20 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    public class GenericListEntity<TKey, TValue, TGenericEntity> : IGenericListEntity<TKey, TValue, TGenericEntity>
-        where TGenericEntity : IGenericEntity<TKey, TValue> {
+    public class ScriptableObjectGenericListEntity<TValue> : ScriptableObjectGenericEntity, IGenericListEntity<TValue> {
 
         [SerializeField]
-        private List<TGenericEntity> list;
+        private List<TValue> list;
 
-        public IList<TGenericEntity> List {
-            get {
-                return this.list;
-            }
-        }
+        public IList<TValue> List => this.list;
 
     }
 
-    public class ScriptableObjectGenericListEntity<TKey, TValue, TGenericEntity> : ScriptableObject, IGenericListEntity<TKey, TValue, TGenericEntity>
-        where TGenericEntity : IGenericEntity<TKey, TValue> {
+    public class ScriptableObjectGenericEntityList<TEntity> : ScriptableObjectGenericListEntity<TEntity> where TEntity : IGenericEntity {
 
-        [SerializeField]
-        private List<TGenericEntity> list;
+    }
 
-        public IList<TGenericEntity> List {
-            get {
-                return this.list;
-            }
-        }
+    public class ScriptableObjectGenericPairEntityList<TKey, TValue, TGenericPairEntity> : ScriptableObjectGenericListEntity<TGenericPairEntity> where TGenericPairEntity : IGenericPairEntity<TKey, TValue> {
 
     }
 

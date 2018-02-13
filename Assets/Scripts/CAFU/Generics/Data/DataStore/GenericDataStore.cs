@@ -7,97 +7,44 @@ using CAFU.Generics.Domain.Repository;
 using UniRx;
 using UnityEngine;
 
+// ReSharper disable UseStringInterpolation
+
 namespace CAFU.Generics.Data.DataStore {
 
     public interface IGenericDataStore : IDataStore {
 
-    }
-
-    public interface IGenericDataStore<in TKey, TValue, TGenericEntity> : IGenericDataStore
-        where TGenericEntity : IGenericEntity<TKey, TValue> {
-
-        TGenericEntity GetEntity(TKey key);
-
-        IList<TGenericEntity> GetEntityList();
-
-        IList<TGenericEntity> GetEntityList(Predicate<TGenericEntity> predecate);
+        TGenericEntity GetEntity<TGenericEntity>(bool checkStrict);
 
     }
 
-    public abstract class GenericDataStore : ObservableLifecycleMonoBehaviour {
-
-    }
-
-    public abstract class GenericDataStoreSingle<TKey, TValue, TGenericEntity> : GenericDataStore, IGenericDataStore<TKey, TValue, TGenericEntity>
-        where TGenericEntity : IGenericEntity<TKey, TValue> {
-
-        public class Factory : SceneDataStoreFactory<GenericDataStoreSingle<TKey, TValue, TGenericEntity>> {
-
-        }
+    public class GenericDataStore : ObservableLifecycleMonoBehaviour, IGenericDataStore {
 
         [SerializeField]
-        private TGenericEntity genericEntity;
+        private List<GenericEntity> genericEntityList;
 
-        private TGenericEntity GenericEntity {
-            get {
-                return this.genericEntity;
-            }
-        }
+        private IEnumerable<IGenericEntity> GenericEntityList => this.genericEntityList;
 
-        public TGenericEntity GetEntity(TKey key) {
-            return this.GenericEntity;
-        }
+        [SerializeField]
+        private List<ScriptableObjectGenericEntity> scriptableObjectGenericEntityList;
 
-        public IList<TGenericEntity> GetEntityList() {
-            return new List<TGenericEntity>() {
-                this.GenericEntity,
-            };
-        }
-
-        public IList<TGenericEntity> GetEntityList(Predicate<TGenericEntity> predecate) {
-            return this.GetEntityList().Where(x => predecate(x)).ToList();
-        }
+        private IEnumerable<IGenericEntity> ScriptableObjectGenericEntityList => this.scriptableObjectGenericEntityList;
 
         protected override void OnAwake() {
             base.OnAwake();
-            GenericRepository<TKey, TValue, TGenericEntity>.DataStoreFactory = new Factory();
+            GenericRepository.GenericDataStore = this;
         }
 
-    }
-
-    public abstract class GenericDataStoreMultiple<TKey, TValue, TGenericEntity, TGenericListEntity> : GenericDataStore, IGenericDataStore<TKey, TValue, TGenericEntity>
-        where TGenericEntity : IGenericEntity<TKey, TValue>
-        where TGenericListEntity : IGenericListEntity<TKey, TValue, TGenericEntity> {
-
-        public class Factory : SceneDataStoreFactory<GenericDataStoreMultiple<TKey, TValue, TGenericEntity, TGenericListEntity>> {
-
-        }
-
-
-        [SerializeField]
-        private TGenericListEntity genericListEntity;
-
-        private TGenericListEntity GenericListEntity {
-            get {
-                return this.genericListEntity;
+        public TGenericEntity GetEntity<TGenericEntity>(bool checkStrict) {
+            if (this.GenericEntityList.Any(x => x is TGenericEntity)) {
+                return this.GenericEntityList.OfType<TGenericEntity>().First();
             }
-        }
-
-        public TGenericEntity GetEntity(TKey key) {
-            return this.GenericListEntity.List.First(x => x.Key.Equals(key));
-        }
-
-        public IList<TGenericEntity> GetEntityList() {
-            return this.GenericListEntity.List;
-        }
-
-        public IList<TGenericEntity> GetEntityList(Predicate<TGenericEntity> predecate) {
-            return this.GetEntityList().Where(x => predecate(x)).ToList();
-        }
-
-        protected override void OnAwake() {
-            base.OnAwake();
-            GenericRepository<TKey, TValue, TGenericEntity>.DataStoreFactory = new Factory();
+            if (this.ScriptableObjectGenericEntityList.Any(x => x is TGenericEntity)) {
+                return this.ScriptableObjectGenericEntityList.OfType<TGenericEntity>().First();
+            }
+            if (checkStrict) {
+                throw new InvalidOperationException(string.Format("Type of '{0}' does not found in GenericDataStore", typeof(TGenericEntity).FullName));
+            }
+            return default(TGenericEntity);
         }
 
     }

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CAFU.Core.Domain.UseCase;
+﻿using CAFU.Core.Domain.UseCase;
 using CAFU.Generics.Data.Entity;
-using CAFU.Generics.Domain.Model;
 using CAFU.Generics.Domain.Repository;
-using CAFU.Generics.Domain.Translator;
 
 namespace CAFU.Generics.Domain.UseCase {
 
@@ -13,44 +8,29 @@ namespace CAFU.Generics.Domain.UseCase {
 
     }
 
-    public interface IGenericUseCase<TKey, TValue, out TGenericEntity> : IGenericUseCase
-        where TGenericEntity : IGenericEntity<TKey, TValue> {
+    public interface IGenericUseCase<out TGenericEntity> : IGenericUseCase
+        where TGenericEntity : IGenericEntity {
 
-        IGenericModel<TKey, TValue> GetModel(TKey key);
-
-        IList<IGenericModel<TKey, TValue>> GetModelList();
-
-        IList<IGenericModel<TKey, TValue>> GetModelList(Predicate<TGenericEntity> predicate);
+        TGenericEntity GetEntity(bool checkStrict = true);
 
     }
 
-    public class GenericUseCase<TKey, TValue, TGenericEntity> : IGenericUseCase<TKey, TValue, TGenericEntity>
-        where TGenericEntity : IGenericEntity<TKey, TValue> {
+    public class GenericUseCase<TGenericEntity> : IGenericUseCase<TGenericEntity>
+        where TGenericEntity : IGenericEntity {
 
-        public class Factory : DefaultUseCaseFactory<GenericUseCase<TKey, TValue, TGenericEntity>> {
+        public class Factory : DefaultUseCaseFactory<GenericUseCase<TGenericEntity>> {
 
-            protected override void Initialize(GenericUseCase<TKey, TValue, TGenericEntity> instance) {
+            protected override void Initialize(GenericUseCase<TGenericEntity> instance) {
                 base.Initialize(instance);
-                instance.GenericRepository = new GenericRepository<TKey, TValue, TGenericEntity>.Factory().Create();
-                instance.GenericModelTranslator = new GenericModelTranslator<TKey, TValue, TGenericEntity, GenericModel<TKey, TValue>>.Factory().Create();
+                instance.GenericRepository = new GenericRepository<TGenericEntity>.Factory().Create();
             }
 
         }
 
-        private IGenericRepository<TKey, TValue, TGenericEntity> GenericRepository { get; set; }
+        private IGenericRepository<TGenericEntity> GenericRepository { get; set; }
 
-        private IGenericModelTranslator<TGenericEntity, IGenericModel<TKey, TValue>> GenericModelTranslator { get; set; }
-
-        public IGenericModel<TKey, TValue> GetModel(TKey key) {
-            return this.GenericModelTranslator.Translate(this.GenericRepository.GetEntity(key));
-        }
-
-        public IList<IGenericModel<TKey, TValue>> GetModelList() {
-            return this.GenericRepository.GetEntityList().Select(x => this.GenericModelTranslator.Translate(x)).ToList();
-        }
-
-        public IList<IGenericModel<TKey, TValue>> GetModelList(Predicate<TGenericEntity> predicate) {
-            return this.GenericRepository.GetEntityList(predicate).Select(x => this.GenericModelTranslator.Translate(x)).ToList();
+        public TGenericEntity GetEntity(bool checkStrict = true) {
+            return this.GenericRepository.GetEntity(checkStrict);
         }
 
     }
