@@ -13,17 +13,18 @@ namespace CAFU.Generics.Domain.UseCase {
 
     }
 
-    public interface IGenericUseCase<TKey, TValue> : IGenericUseCase {
+    public interface IGenericUseCase<TKey, TValue, out TGenericEntity> : IGenericUseCase
+        where TGenericEntity : IGenericEntity<TKey, TValue> {
 
         IGenericModel<TKey, TValue> GetModel(TKey key);
 
         IList<IGenericModel<TKey, TValue>> GetModelList();
 
-        IList<IGenericModel<TKey, TValue>> GetModelList(Predicate<IGenericModel<TKey, TValue>> predicate);
+        IList<IGenericModel<TKey, TValue>> GetModelList(Predicate<TGenericEntity> predicate);
 
     }
 
-    public class GenericUseCase<TKey, TValue, TGenericEntity> : IGenericUseCase<TKey, TValue>
+    public class GenericUseCase<TKey, TValue, TGenericEntity> : IGenericUseCase<TKey, TValue, TGenericEntity>
         where TGenericEntity : IGenericEntity<TKey, TValue> {
 
         public class Factory : DefaultUseCaseFactory<GenericUseCase<TKey, TValue, TGenericEntity>> {
@@ -48,8 +49,8 @@ namespace CAFU.Generics.Domain.UseCase {
             return this.GenericRepository.GetEntityList().Select(x => this.GenericModelTranslator.Translate(x)).ToList();
         }
 
-        public IList<IGenericModel<TKey, TValue>> GetModelList(Predicate<IGenericModel<TKey, TValue>> predicate) {
-            return this.GenericRepository.GetEntityList((x) => predicate((IGenericModel<TKey, TValue>)x)).Select(x => this.GenericModelTranslator.Translate(x)).ToList();
+        public IList<IGenericModel<TKey, TValue>> GetModelList(Predicate<TGenericEntity> predicate) {
+            return this.GenericRepository.GetEntityList(predicate).Select(x => this.GenericModelTranslator.Translate(x)).ToList();
         }
 
     }
