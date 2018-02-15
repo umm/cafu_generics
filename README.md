@@ -44,6 +44,7 @@ npm install github:umm-projects/cafu_generics
   * 紛らわしいが、値の型制約として `IGenericEntity` 型に限定している
 * 定数 Entity の一覧から値を取得するなどの場合に用いる
   * 一応用意しているが、あまり使うコトは無さそう
+* `GetChildEntity(Func<TGenericEntity, bool> predicate)` という子要素を検索するための拡張メソッドも生やしてある
 
 #### `GenericPairEntityList<TGenericPairEntity>`, `ScriptableObjectGenericPairEntityList<TGenericPairEntity>`
 
@@ -51,6 +52,7 @@ npm install github:umm-projects/cafu_generics
   * 紛らわしいが、値の型制約として `IGenericPairEntity` 型に限定している
 * 疑似 Dictionary を作る場合などに用いる
   * 恐らく最も利用する頻度の高い Entity
+* `GetChildEntity(TKey key)` という子要素を検索するための拡張メソッドも生やしてある
 
 ### DataStore
 
