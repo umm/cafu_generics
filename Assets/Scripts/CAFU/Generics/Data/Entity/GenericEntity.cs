@@ -13,38 +13,21 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    public interface IGenericEntity<out TValue> : IGenericEntity {
-
-        TValue Value { get; }
+    public interface IGenericPairEntity : IGenericEntity {
 
     }
 
-    public interface IGenericEntity<out TKey, out TValue> : IGenericEntity<TValue> {
-
-        TKey Key { get; }
+    public interface IGenericListEntity : IGenericEntity {
 
     }
 
-    public interface IGenericPairEntity<out TKey, out TValue> : IGenericEntity {
-
-        TKey Key { get; }
-
-        TValue Value { get; }
-
-    }
-
-    public interface IGenericListEntity<TValue> : IGenericEntity {
-
-        IList<TValue> List { get; }
-
-    }
-
+    // 本当は abstract にしたいが、Serialize 出来なくなるので通常 class にする
     [Serializable]
     public class GenericEntity : IGenericEntity {
 
     }
 
-    public class GenericEntity<TValue> : GenericEntity, IGenericEntity<TValue> {
+    public class GenericEntity<TValue> : GenericEntity {
 
         [SerializeField]
         private TValue value;
@@ -57,7 +40,8 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    public class GenericPairEntity<TKey, TValue> : GenericEntity, IGenericPairEntity<TKey, TValue> {
+    // GenericEntity<TValue> を継承する手もあるが、Inspector 上で Key/Value の並びが逆になってしまうので断念
+    public class GenericPairEntity<TKey, TValue> : GenericEntity, IGenericPairEntity {
 
         [SerializeField]
         private TKey key;
@@ -79,7 +63,7 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    public class GenericListEntity<TValue> : GenericEntity, IGenericListEntity<TValue> {
+    public class GenericListEntity<TValue> : GenericEntity, IGenericListEntity {
 
         [SerializeField]
         private List<TValue> list;
@@ -92,14 +76,19 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    public class GenericPairEntityList<TKey, TValue, TGenericPairEntity> : GenericListEntity<TGenericPairEntity> where TGenericPairEntity : IGenericPairEntity<TKey, TValue> {
+    public class GenericPairEntityList<TGenericPairEntity> : GenericEntityList<TGenericPairEntity> where TGenericPairEntity : IGenericPairEntity {
 
     }
 
-    public abstract class ScriptableObjectGenericEntity : ScriptableObject, IGenericEntity {
+    [Obsolete("Please use 'GenericPairEntityList<TGenericPairEntity>' instead of thi class.")]
+    public class GenericPairEntityList<TKey, TValue, TGenericPairEntity> : GenericPairEntityList<TGenericPairEntity> where TGenericPairEntity : IGenericPairEntity {
+
     }
 
-    public class ScriptableObjectGenericEntity<TValue> : ScriptableObjectGenericEntity, IGenericEntity<TValue> {
+    public class ScriptableObjectGenericEntity : ScriptableObject, IGenericEntity {
+    }
+
+    public class ScriptableObjectGenericEntity<TValue> : ScriptableObjectGenericEntity {
 
         [SerializeField]
         private TValue value;
@@ -112,7 +101,8 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    public class ScriptableObjectGenericPairEntity<TKey, TValue> : ScriptableObjectGenericEntity, IGenericPairEntity<TKey, TValue> {
+    // GenericEntity<TValue> を継承する手もあるが、Inspector 上で Key/Value の並びが逆になってしまうので断念
+    public class ScriptableObjectGenericPairEntity<TKey, TValue> : ScriptableObjectGenericEntity, IGenericPairEntity {
 
         [SerializeField]
         private TKey key;
@@ -134,7 +124,7 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    public class ScriptableObjectGenericListEntity<TValue> : ScriptableObjectGenericEntity, IGenericListEntity<TValue> {
+    public class ScriptableObjectGenericListEntity<TValue> : ScriptableObjectGenericEntity, IGenericListEntity {
 
         [SerializeField]
         private List<TValue> list;
@@ -147,7 +137,12 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    public class ScriptableObjectGenericPairEntityList<TKey, TValue, TGenericPairEntity> : ScriptableObjectGenericListEntity<TGenericPairEntity> where TGenericPairEntity : IGenericPairEntity<TKey, TValue> {
+    public class ScriptableObjectGenericPairEntityList<TGenericPairEntity> : ScriptableObjectGenericEntityList<TGenericPairEntity> where TGenericPairEntity : IGenericPairEntity {
+
+    }
+
+    [Obsolete("Please use 'GenericPairEntityList<TGenericPairEntity>' instead of thi class.")]
+    public class ScriptableObjectGenericPairEntityList<TKey, TValue, TGenericPairEntity> : ScriptableObjectGenericPairEntityList<TGenericPairEntity> where TGenericPairEntity : IGenericPairEntity {
 
     }
 
