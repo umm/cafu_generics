@@ -48,7 +48,7 @@ npm install github:umm-projects/cafu_generics
 #### `GenericPairEntityList<TGenericPairEntity>`, `ScriptableObjectGenericPairEntityList<TGenericPairEntity>`
 
 * GenericPairEntity をリストとして内包する Entity
-  * 紛らわしいが、値の型制約として `IPairGenericEntity` 型に限定している
+  * 紛らわしいが、値の型制約として `IGenericPairEntity` 型に限定している
 * 疑似 Dictionary を作る場合などに用いる
   * 恐らく最も利用する頻度の高い Entity
 
@@ -77,6 +77,15 @@ npm install github:umm-projects/cafu_generics
 * Presenter から直接 Entity を参照したい場合に用いる
 * CAFU 的には想定していない操作になるため、原則非推奨
 * `GetEntity()` メソッドで Entity のインスタンスを返す
+
+### Generator
+
+* ScriptableObject のアセットファイルを作成するためのカスタムエディタウィンドウを提供
+* メニューの Window &gt; CAFU &gt; Entity Generator からウィンドウを開く
+* `ScriptableObjectGenericEntity` を継承したクラスが作成対象
+
+<img width="407" alt="screenshot 2018-02-15 12 51 09" src="https://user-images.githubusercontent.com/838945/36239702-09d5d23a-124f-11e8-808a-17e6ff5aa698.png">
+<img width="434" alt="screenshot 2018-02-15 12 51 17" src="https://user-images.githubusercontent.com/838945/36239703-0cae942e-124f-11e8-8301-39a5d7b411a0.png">
 
 ## License
 
