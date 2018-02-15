@@ -81,6 +81,7 @@ npm install github:umm-projects/cafu_generics
 ### Generator
 
 * ScriptableObject のアセットファイルを作成するためのカスタムエディタウィンドウを提供
+* メニューの Window &gt; CAFU &gt; Entity Generator からウィンドウを開く
 * `ScriptableObjectGenericEntity` を継承したクラスが作成対象
 
 <img width="407" alt="screenshot 2018-02-15 12 51 09" src="https://user-images.githubusercontent.com/838945/36239702-09d5d23a-124f-11e8-808a-17e6ff5aa698.png">
