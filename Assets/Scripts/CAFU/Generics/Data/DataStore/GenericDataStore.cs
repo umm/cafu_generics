@@ -37,6 +37,12 @@ namespace CAFU.Generics.Data.DataStore {
             GenericRepository.GenericDataStore = this;
         }
 
+        protected override void OnDestroy() {
+            base.OnDestroy();
+            this.genericEntityList.Clear();
+            this.scriptableObjectGenericEntityList.Clear();
+        }
+
         public TGenericEntity GetEntity<TGenericEntity>() where TGenericEntity : IGenericEntity {
             if (this.GenericEntityList.Any(x => x is TGenericEntity)) {
                 return this.GenericEntityList.OfType<TGenericEntity>().First();
