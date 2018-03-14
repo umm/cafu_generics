@@ -25,12 +25,20 @@ namespace CAFU.Generics.Data.DataStore {
         [SerializeField]
         private List<GenericEntity> genericEntityList;
 
-        private IEnumerable<IGenericEntity> GenericEntityList => this.genericEntityList;
+        private IEnumerable<IGenericEntity> GenericEntityList {
+            get {
+                return this.genericEntityList;
+            }
+        }
 
         [SerializeField]
         private List<ScriptableObjectGenericEntity> scriptableObjectGenericEntityList;
 
-        private IEnumerable<IGenericEntity> ScriptableObjectGenericEntityList => this.scriptableObjectGenericEntityList;
+        private IEnumerable<IGenericEntity> ScriptableObjectGenericEntityList {
+            get {
+                return this.scriptableObjectGenericEntityList;
+            }
+        }
 
         protected override void OnAwake() {
             base.OnAwake();

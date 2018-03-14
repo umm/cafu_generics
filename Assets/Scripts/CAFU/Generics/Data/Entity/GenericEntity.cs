@@ -107,7 +107,11 @@ namespace CAFU.Generics.Data.Entity {
         [SerializeField]
         private List<TValue> list;
 
-        public IList<TValue> List => this.list;
+        public IList<TValue> List {
+            get {
+                return this.list;
+            }
+        }
 
     }
 
@@ -169,7 +173,11 @@ namespace CAFU.Generics.Data.Entity {
         [SerializeField]
         private List<TValue> list;
 
-        public IList<TValue> List => this.list;
+        public IList<TValue> List {
+            get {
+                return this.list;
+            }
+        }
 
     }
 
