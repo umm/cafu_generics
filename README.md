@@ -1,6 +1,7 @@
 # CAFU Generics
 
-* 汎用的な Entity を定義し、取り扱うためのモジュールです。
+* 汎用的な値を取り扱うためのモジュール
+* 汎用的な Entity と、汎用的な状態を管理するための Model を提供する
 
 ## Requirement
 
@@ -15,7 +16,7 @@ npm install github:umm-projects/cafu_generics
 
 ## Usage
 
-### Entity
+### GenericEntity
 
 * 作成したいデータの構造に合わせて Entity を作成する
   * Unity の Serializer の制約上、Generics を用いたクラスはシリアライズできないため、 `GenericEntity<>` などを継承したクラスを作る必要がある
@@ -54,8 +55,6 @@ npm install github:umm-projects/cafu_generics
   * 恐らく最も利用する頻度の高い Entity
 * `GetChildEntity(TKey key)` という子要素を検索するための拡張メソッドも生やしてある
 
-### DataStore
-
 #### `GenericDataStore`
 
 * Entity を保持管理するためのクラス
@@ -64,15 +63,11 @@ npm install github:umm-projects/cafu_generics
   * `Scriptable Object Generic Entity List` というフィールドが Inspector 上に生えているので、そこに ScriptableObject を D&amp;D する
 * `GetEntity<TGenericEntity>()` メソッドで Entity のインスタンスを返す
 
-### Repository
-
 #### `GenericRepository<TGenericEntity>`
 
 * 型引数に渡した Entity を GenericDataStore から取得する
 * 任意の UseCase で、このインスタンスを必要な Entity の数分生成し、 Model の構成要素として Entity を取得する
 * `GetEntity()` メソッドで Entity のインスタンスを返す
-
-### UseCase
 
 #### `GenericUseCase<TGenericEntity>`
 
@@ -80,7 +75,7 @@ npm install github:umm-projects/cafu_generics
 * CAFU 的には想定していない操作になるため、原則非推奨
 * `GetEntity()` メソッドで Entity のインスタンスを返す
 
-### Generator
+#### Generator
 
 * ScriptableObject のアセットファイルを作成するためのカスタムエディタウィンドウを提供
 * メニューの Window &gt; CAFU &gt; Entity Generator からウィンドウを開く
@@ -88,6 +83,32 @@ npm install github:umm-projects/cafu_generics
 
 <img width="407" alt="screenshot 2018-02-15 12 51 09" src="https://user-images.githubusercontent.com/838945/36239702-09d5d23a-124f-11e8-808a-17e6ff5aa698.png">
 <img width="434" alt="screenshot 2018-02-15 12 51 17" src="https://user-images.githubusercontent.com/838945/36239703-0cae942e-124f-11e8-8301-39a5d7b411a0.png">
+
+### GenericStateModel
+
+#### `GenericStateModel<TState>`
+
+* **状態**を管理するための Model クラス
+* 型引数の制約として `struct` としているので、enum を用いた状態遷移や bool によるトグルなどをサポートする
+* 任意の UseCase からの利用を想定して、備えるべきメソッドとその実装を内包している
+
+##### 公開メソッド
+
+| Method Signature | Description |
+| --- | --- |
+| `TState GetCurrent()` | 現在の値を取得 |
+| `void Change(TState state, bool forceNotify = false)` | 状態を変更<br />第二引数に真を渡すと、値が変更されていなくても `OnChangeAsObservable` に値を流す（内部的には ReactiveProperty.SetValueAndForceNotify）を実行している |
+| `void Reset()` | 値を初期値に戻す |
+| `void Next()` | 値を一つ進める<br />`dynamic` による加算を行っているため、 `+` オペレータを解釈できない型の場合 Exception を吐く |
+| `void Previous()` | 値を一つ戻す<br />`dynamic` による減算を行っているため、 `-` オペレータを解釈できない型の場合 Exception を吐く |
+| `IObservable<TState> OnChangeAsObservable()` | 値の変更を通知するストリームを構築 |
+| `IObservable<Unit> OnChangeAsObservable(TState state)` | 値が第一引数の値になったコトを通知するストリームを構築 |
+
+#### `GenericStateUseCase<TState>`
+
+* `GenericStateModel<TState>` の UseCase Wrapper
+* Presenter レイヤから取り扱えるように用意している
+* 公開メソッドは `GenericStateModel<TState>` と等しい
 
 ## License
 
