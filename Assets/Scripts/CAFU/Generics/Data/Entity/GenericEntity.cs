@@ -15,9 +15,9 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    public interface IGenericEntity<out TValue> : IGenericEntity {
+    public interface IGenericEntity<TValue> : IGenericEntity {
 
-        TValue Value { get; }
+        TValue Value { get; set; }
 
     }
 
@@ -25,15 +25,15 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    public interface IGenericPairEntity<out TKey> : IGenericPairEntity {
+    public interface IGenericPairEntity<TKey> : IGenericPairEntity {
 
-        TKey Key { get; }
+        TKey Key { get; set; }
 
     }
 
-    public interface IGenericPairEntity<out TKey, out TValue> : IGenericPairEntity<TKey> {
+    public interface IGenericPairEntity<TKey, TValue> : IGenericPairEntity<TKey> {
 
-        TValue Value { get; }
+        TValue Value { get; set; }
 
     }
 
@@ -43,7 +43,7 @@ namespace CAFU.Generics.Data.Entity {
 
     public interface IGenericListEntity<TValue> : IGenericListEntity {
 
-        IList<TValue> List { get; }
+        IList<TValue> List { get; set; }
 
     }
 
@@ -70,6 +70,9 @@ namespace CAFU.Generics.Data.Entity {
             get {
                 return this.value;
             }
+            set {
+                this.value = value;
+            }
         }
 
     }
@@ -84,6 +87,9 @@ namespace CAFU.Generics.Data.Entity {
             get {
                 return this.key;
             }
+            set {
+                this.key = value;
+            }
         }
 
         [SerializeField]
@@ -92,6 +98,9 @@ namespace CAFU.Generics.Data.Entity {
         public TValue Value {
             get {
                 return this.value;
+            }
+            set {
+                this.value = value;
             }
         }
 
@@ -110,6 +119,9 @@ namespace CAFU.Generics.Data.Entity {
         public IList<TValue> List {
             get {
                 return this.list;
+            }
+            set {
+                this.list = (List<TValue>)value;
             }
         }
 
@@ -135,6 +147,9 @@ namespace CAFU.Generics.Data.Entity {
             get {
                 return this.value;
             }
+            set {
+                this.value = value;
+            }
         }
 
     }
@@ -149,6 +164,9 @@ namespace CAFU.Generics.Data.Entity {
             get {
                 return this.key;
             }
+            set {
+                this.key = value;
+            }
         }
 
         [SerializeField]
@@ -157,6 +175,9 @@ namespace CAFU.Generics.Data.Entity {
         public TValue Value {
             get {
                 return this.value;
+            }
+            set {
+                this.value = value;
             }
         }
 
@@ -176,6 +197,9 @@ namespace CAFU.Generics.Data.Entity {
         public IList<TValue> List {
             get {
                 return this.list;
+            }
+            set {
+                this.list = (List<TValue>)value;
             }
         }
 
