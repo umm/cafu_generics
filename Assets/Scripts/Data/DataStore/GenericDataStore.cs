@@ -4,33 +4,28 @@ using System.Linq;
 using CAFU.Core.Data.DataStore;
 using CAFU.Generics.Data.Entity;
 using CAFU.Generics.Domain.Repository;
+using JetBrains.Annotations;
 using UniRx;
 using UnityEngine;
 
-// ReSharper disable UseStringInterpolation
-
 namespace CAFU.Generics.Data.DataStore
 {
+    [PublicAPI]
     public interface IGenericDataStore : IDataStore
     {
         TGenericEntity GetEntity<TGenericEntity>() where TGenericEntity : IGenericEntity;
     }
 
+    [PublicAPI]
     public class GenericDataStore : ObservableLifecycleMonoBehaviour, IGenericDataStore
     {
         [SerializeField] private List<GenericEntity> genericEntityList;
 
-        private IEnumerable<IGenericEntity> GenericEntityList
-        {
-            get { return this.genericEntityList; }
-        }
+        private IEnumerable<IGenericEntity> GenericEntityList => genericEntityList;
 
         [SerializeField] private List<ScriptableObjectGenericEntity> scriptableObjectGenericEntityList;
 
-        private IEnumerable<IGenericEntity> ScriptableObjectGenericEntityList
-        {
-            get { return this.scriptableObjectGenericEntityList; }
-        }
+        private IEnumerable<IGenericEntity> ScriptableObjectGenericEntityList => scriptableObjectGenericEntityList;
 
         protected override void OnAwake()
         {
@@ -41,23 +36,23 @@ namespace CAFU.Generics.Data.DataStore
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            this.genericEntityList.Clear();
-            this.scriptableObjectGenericEntityList.Clear();
+            genericEntityList.Clear();
+            scriptableObjectGenericEntityList.Clear();
         }
 
         public TGenericEntity GetEntity<TGenericEntity>() where TGenericEntity : IGenericEntity
         {
-            if (this.GenericEntityList.Any(x => x is TGenericEntity))
+            if (GenericEntityList.Any(x => x is TGenericEntity))
             {
-                return this.GenericEntityList.OfType<TGenericEntity>().First();
+                return GenericEntityList.OfType<TGenericEntity>().First();
             }
 
-            if (this.ScriptableObjectGenericEntityList.Any(x => x is TGenericEntity))
+            if (ScriptableObjectGenericEntityList.Any(x => x is TGenericEntity))
             {
-                return this.ScriptableObjectGenericEntityList.OfType<TGenericEntity>().First();
+                return ScriptableObjectGenericEntityList.OfType<TGenericEntity>().First();
             }
 
-            throw new InvalidOperationException(string.Format("Type of '{0}' does not found in GenericDataStore", typeof(TGenericEntity).FullName));
+            throw new InvalidOperationException($"Type of '{typeof(TGenericEntity).FullName}' does not found in GenericDataStore");
         }
     }
 }

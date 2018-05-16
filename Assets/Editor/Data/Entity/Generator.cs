@@ -26,16 +26,16 @@ namespace CAFU.Generics.Data.Entity {
             GetWindow<Generator>("Entity Generator");
         }
 
-        public static void Generate<T>() where T : UnityEngine.ScriptableObject {
+        public static void Generate<T>() where T : ScriptableObject {
             Generate(typeof(T));
         }
 
         public static void Generate(Type type) {
             string path = ResolvePath(type);
-            AssetDatabase.CreateAsset(UnityEngine.ScriptableObject.CreateInstance(type), path);
+            AssetDatabase.CreateAsset(CreateInstance(type), path);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Selection.activeObject = AssetDatabase.LoadAssetAtPath<UnityEngine.ScriptableObject>(path);
+            Selection.activeObject = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path);
         }
 
         private static string ResolvePath(Type type) {
@@ -54,23 +54,23 @@ namespace CAFU.Generics.Data.Entity {
             // ReSharper disable once AssignNullToNotNullAttribute
             string basePath = Path.Combine(directoryName, type.Name);
             // ファイルが存在しないなら確定
-            if (AssetDatabase.LoadAssetAtPath<UnityEngine.ScriptableObject>(string.Format("{0}{1}", basePath, EXTENSION)) == null) {
+            if (AssetDatabase.LoadAssetAtPath<ScriptableObject>(string.Format("{0}{1}", basePath, EXTENSION)) == null) {
                 return string.Format("{0}{1}", basePath, EXTENSION);
             }
             // ファイルが存在する場合はサフィックスとして数字を付ける
             int index = 0;
-            while (AssetDatabase.LoadAssetAtPath<UnityEngine.ScriptableObject>(string.Format("{0} {1}{2}", basePath, ++index, EXTENSION)) != null) {
+            while (AssetDatabase.LoadAssetAtPath<ScriptableObject>(string.Format("{0} {1}{2}", basePath, ++index, EXTENSION)) != null) {
             }
             return string.Format("{0} {1}{2}", basePath, index, EXTENSION);
         }
         private void OnGUI() {
             GUILayout.Label("Generate");
             EditorGUI.indentLevel++;
-            this.SelectedIndex = EditorGUILayout.Popup("Entity", this.SelectedIndex, EntityTypeNameList.ToArray());
+            SelectedIndex = EditorGUILayout.Popup("Entity", SelectedIndex, EntityTypeNameList.ToArray());
             EditorGUI.indentLevel--;
             EditorGUILayout.Space();
             if (GUILayout.Button("Generate")) {
-                Generate(EntityTypeList[this.SelectedIndex]);
+                Generate(EntityTypeList[SelectedIndex]);
             }
         }
 

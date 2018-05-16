@@ -1,9 +1,11 @@
 ﻿using CAFU.Core.Domain.UseCase;
 using CAFU.Generics.Domain.Model;
+using JetBrains.Annotations;
 using UniRx;
 
 namespace CAFU.Generics.Domain.UseCase
 {
+    [PublicAPI]
     public interface IGenericStateUseCase<TState> : IUseCase where TState : struct
     {
         IObservable<TState> OnChangeAsObservable();
@@ -21,10 +23,12 @@ namespace CAFU.Generics.Domain.UseCase
         void Previous();
     }
 
+    [PublicAPI]
     public interface ISingletonGenericStateUseCase<TState> : IGenericStateUseCase<TState>, ISingletonUseCase where TState : struct
     {
     }
 
+    [PublicAPI]
     public class GenericStateUseCase<TState> : IGenericStateUseCase<TState> where TState : struct
     {
         public class Factory : DefaultUseCaseFactory<GenericStateUseCase<TState>>
@@ -40,40 +44,41 @@ namespace CAFU.Generics.Domain.UseCase
 
         public IObservable<TState> OnChangeAsObservable()
         {
-            return this.GenericStateModel.OnChangeAsObservable();
+            return GenericStateModel.OnChangeAsObservable();
         }
 
         public IObservable<Unit> OnChangeAsObservable(TState state)
         {
-            return this.GenericStateModel.OnChangeAsObservable(state);
+            return GenericStateModel.OnChangeAsObservable(state);
         }
 
         public TState GetCurrent()
         {
-            return this.GenericStateModel.GetCurrent();
+            return GenericStateModel.GetCurrent();
         }
 
         public void Change(TState state, bool forceNotify = false)
         {
-            this.GenericStateModel.Change(state, forceNotify);
+            GenericStateModel.Change(state, forceNotify);
         }
 
         public void Reset()
         {
-            this.GenericStateModel.Reset();
+            GenericStateModel.Reset();
         }
 
         public void Next()
         {
-            this.GenericStateModel.Next();
+            GenericStateModel.Next();
         }
 
         public void Previous()
         {
-            this.GenericStateModel.Previous();
+            GenericStateModel.Previous();
         }
     }
 
+    [PublicAPI]
     public class SingletonGenericStateUseCase<TState> : GenericStateUseCase<TState>, ISingletonGenericStateUseCase<TState> where TState : struct
     {
         public new class Factory : DefaultUseCaseFactory<SingletonGenericStateUseCase<TState>>
