@@ -1,5 +1,4 @@
-﻿using System;
-using CAFU.Core.Domain.Repository;
+﻿using CAFU.Core.Domain.Repository;
 using CAFU.Generics.Data.DataStore;
 using CAFU.Generics.Data.Entity;
 
@@ -13,9 +12,6 @@ namespace CAFU.Generics.Domain.Repository {
         where TGenericEntity : IGenericEntity {
 
         TGenericEntity GetEntity();
-
-        [Obsolete("Please use overload method has no arguments.")]
-        TGenericEntity GetEntity(bool checkStrict);
 
     }
 
@@ -34,11 +30,6 @@ namespace CAFU.Generics.Domain.Repository {
 
         public TGenericEntity GetEntity() {
             return GenericDataStore.GetEntity<TGenericEntity>();
-        }
-
-        [Obsolete("Please use overload method has no arguments.")]
-        public TGenericEntity GetEntity(bool checkStrict) {
-            return this.GetEntity();
         }
 
     }

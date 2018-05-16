@@ -228,14 +228,4 @@ namespace CAFU.Generics.Data.Entity {
 
     }
 
-    [Obsolete("Please use 'GenericPairEntityList<TGenericPairEntity>' instead of thi class.")]
-    public class GenericPairEntityList<TKey, TValue, TGenericPairEntity> : GenericPairEntityList<TGenericPairEntity> where TGenericPairEntity : IGenericPairEntity {
-
-    }
-
-    [Obsolete("Please use 'ScriptableObjectGenericPairEntityList<TGenericPairEntity>' instead of thi class.")]
-    public class ScriptableObjectGenericPairEntityList<TKey, TValue, TGenericPairEntity> : ScriptableObjectGenericPairEntityList<TGenericPairEntity> where TGenericPairEntity : IGenericPairEntity {
-
-    }
-
 }
