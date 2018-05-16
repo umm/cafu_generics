@@ -1,11 +1,13 @@
 ﻿using CAFU.Core.Domain.UseCase;
 using CAFU.Generics.Domain.Model;
+using JetBrains.Annotations;
 using UniRx;
 
-namespace CAFU.Generics.Domain.UseCase {
-
-    public interface IGenericStateUseCase<TState> : IUseCase where TState : struct {
-
+namespace CAFU.Generics.Domain.UseCase
+{
+    [PublicAPI]
+    public interface IGenericStateUseCase<TState> : IUseCase where TState : struct
+    {
         IObservable<TState> OnChangeAsObservable();
 
         IObservable<Unit> OnChangeAsObservable(TState state);
@@ -19,67 +21,73 @@ namespace CAFU.Generics.Domain.UseCase {
         void Next();
 
         void Previous();
-
     }
 
-    public interface ISingletonGenericStateUseCase<TState> : IGenericStateUseCase<TState>, ISingletonUseCase where TState : struct {
-
+    [PublicAPI]
+    public interface ISingletonGenericStateUseCase<TState> : IGenericStateUseCase<TState>, ISingletonUseCase where TState : struct
+    {
     }
 
-    public class GenericStateUseCase<TState> : IGenericStateUseCase<TState> where TState : struct {
-
-        public class Factory : DefaultUseCaseFactory<GenericStateUseCase<TState>> {
-
-            protected override void Initialize(GenericStateUseCase<TState> instance) {
+    [PublicAPI]
+    public class GenericStateUseCase<TState> : IGenericStateUseCase<TState> where TState : struct
+    {
+        public class Factory : DefaultUseCaseFactory<GenericStateUseCase<TState>>
+        {
+            protected override void Initialize(GenericStateUseCase<TState> instance)
+            {
                 base.Initialize(instance);
                 instance.GenericStateModel = new GenericStateModel<TState>();
             }
-
         }
 
         protected IGenericStateModel<TState> GenericStateModel { private get; set; }
 
-        public IObservable<TState> OnChangeAsObservable() {
-            return this.GenericStateModel.OnChangeAsObservable();
+        public IObservable<TState> OnChangeAsObservable()
+        {
+            return GenericStateModel.OnChangeAsObservable();
         }
 
-        public IObservable<Unit> OnChangeAsObservable(TState state) {
-            return this.GenericStateModel.OnChangeAsObservable(state);
+        public IObservable<Unit> OnChangeAsObservable(TState state)
+        {
+            return GenericStateModel.OnChangeAsObservable(state);
         }
 
-        public TState GetCurrent() {
-            return this.GenericStateModel.GetCurrent();
+        public TState GetCurrent()
+        {
+            return GenericStateModel.GetCurrent();
         }
 
-        public void Change(TState state, bool forceNotify = false) {
-            this.GenericStateModel.Change(state, forceNotify);
+        public void Change(TState state, bool forceNotify = false)
+        {
+            GenericStateModel.Change(state, forceNotify);
         }
 
-        public void Reset() {
-            this.GenericStateModel.Reset();
+        public void Reset()
+        {
+            GenericStateModel.Reset();
         }
 
-        public void Next() {
-            this.GenericStateModel.Next();
+        public void Next()
+        {
+            GenericStateModel.Next();
         }
 
-        public void Previous() {
-            this.GenericStateModel.Previous();
+        public void Previous()
+        {
+            GenericStateModel.Previous();
         }
-
     }
 
-    public class SingletonGenericStateUseCase<TState> : GenericStateUseCase<TState>, ISingletonGenericStateUseCase<TState> where TState : struct {
-
-        public new class Factory : DefaultUseCaseFactory<SingletonGenericStateUseCase<TState>> {
-
-            protected override void Initialize(SingletonGenericStateUseCase<TState> instance) {
+    [PublicAPI]
+    public class SingletonGenericStateUseCase<TState> : GenericStateUseCase<TState>, ISingletonGenericStateUseCase<TState> where TState : struct
+    {
+        public new class Factory : DefaultUseCaseFactory<SingletonGenericStateUseCase<TState>>
+        {
+            protected override void Initialize(SingletonGenericStateUseCase<TState> instance)
+            {
                 base.Initialize(instance);
                 instance.GenericStateModel = new GenericStateModel<TState>();
             }
-
         }
-
     }
-
 }

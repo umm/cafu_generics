@@ -4,60 +4,55 @@ using System.Linq;
 using CAFU.Core.Data.DataStore;
 using CAFU.Generics.Data.Entity;
 using CAFU.Generics.Domain.Repository;
+using JetBrains.Annotations;
 using UniRx;
 using UnityEngine;
 
-// ReSharper disable UseStringInterpolation
-
-namespace CAFU.Generics.Data.DataStore {
-
-    public interface IGenericDataStore : IDataStore {
-
+namespace CAFU.Generics.Data.DataStore
+{
+    [PublicAPI]
+    public interface IGenericDataStore : IDataStore
+    {
         TGenericEntity GetEntity<TGenericEntity>() where TGenericEntity : IGenericEntity;
-
     }
 
-    public class GenericDataStore : ObservableLifecycleMonoBehaviour, IGenericDataStore {
+    [PublicAPI]
+    public class GenericDataStore : ObservableLifecycleMonoBehaviour, IGenericDataStore
+    {
+        [SerializeField] private List<GenericEntity> genericEntityList;
 
-        [SerializeField]
-        private List<GenericEntity> genericEntityList;
+        private IEnumerable<IGenericEntity> GenericEntityList => genericEntityList;
 
-        private IEnumerable<IGenericEntity> GenericEntityList {
-            get {
-                return this.genericEntityList;
-            }
-        }
+        [SerializeField] private List<ScriptableObjectGenericEntity> scriptableObjectGenericEntityList;
 
-        [SerializeField]
-        private List<ScriptableObjectGenericEntity> scriptableObjectGenericEntityList;
+        private IEnumerable<IGenericEntity> ScriptableObjectGenericEntityList => scriptableObjectGenericEntityList;
 
-        private IEnumerable<IGenericEntity> ScriptableObjectGenericEntityList {
-            get {
-                return this.scriptableObjectGenericEntityList;
-            }
-        }
-
-        protected override void OnAwake() {
+        protected override void OnAwake()
+        {
             base.OnAwake();
             GenericRepository.GenericDataStore = this;
         }
 
-        protected override void OnDestroy() {
+        protected override void OnDestroy()
+        {
             base.OnDestroy();
-            this.genericEntityList.Clear();
-            this.scriptableObjectGenericEntityList.Clear();
+            genericEntityList.Clear();
+            scriptableObjectGenericEntityList.Clear();
         }
 
-        public TGenericEntity GetEntity<TGenericEntity>() where TGenericEntity : IGenericEntity {
-            if (this.GenericEntityList.Any(x => x is TGenericEntity)) {
-                return this.GenericEntityList.OfType<TGenericEntity>().First();
+        public TGenericEntity GetEntity<TGenericEntity>() where TGenericEntity : IGenericEntity
+        {
+            if (GenericEntityList.Any(x => x is TGenericEntity))
+            {
+                return GenericEntityList.OfType<TGenericEntity>().First();
             }
-            if (this.ScriptableObjectGenericEntityList.Any(x => x is TGenericEntity)) {
-                return this.ScriptableObjectGenericEntityList.OfType<TGenericEntity>().First();
-            }
-            throw new InvalidOperationException(string.Format("Type of '{0}' does not found in GenericDataStore", typeof(TGenericEntity).FullName));
-        }
 
+            if (ScriptableObjectGenericEntityList.Any(x => x is TGenericEntity))
+            {
+                return ScriptableObjectGenericEntityList.OfType<TGenericEntity>().First();
+            }
+
+            throw new InvalidOperationException($"Type of '{typeof(TGenericEntity).FullName}' does not found in GenericDataStore");
+        }
     }
-
 }
