@@ -2,36 +2,33 @@
 using CAFU.Generics.Data.DataStore;
 using CAFU.Generics.Data.Entity;
 
-namespace CAFU.Generics.Domain.Repository {
-
-    public interface IGenericRepository : IRepository {
-
+namespace CAFU.Generics.Domain.Repository
+{
+    public interface IGenericRepository : IRepository
+    {
     }
 
     public interface IGenericRepository<out TGenericEntity> : IGenericRepository
-        where TGenericEntity : IGenericEntity {
-
+        where TGenericEntity : IGenericEntity
+    {
         TGenericEntity GetEntity();
-
     }
 
-    public class GenericRepository : IGenericRepository {
-
+    public class GenericRepository : IGenericRepository
+    {
         public static IGenericDataStore GenericDataStore { protected get; set; }
-
     }
 
     public class GenericRepository<TGenericEntity> : GenericRepository, IGenericRepository<TGenericEntity>
-        where TGenericEntity : IGenericEntity {
-
-        public class Factory : DefaultRepositoryFactory<GenericRepository<TGenericEntity>> {
-
+        where TGenericEntity : IGenericEntity
+    {
+        public class Factory : DefaultRepositoryFactory<GenericRepository<TGenericEntity>>
+        {
         }
 
-        public TGenericEntity GetEntity() {
+        public TGenericEntity GetEntity()
+        {
             return GenericDataStore.GetEntity<TGenericEntity>();
         }
-
     }
-
 }
