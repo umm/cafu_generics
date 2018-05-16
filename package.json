@@ -26,6 +26,7 @@
   ],
   "dependencies": {
     "@umm/cafu_core": "umm-projects/cafu_core#^2.0.0",
+    "@umm/cafu_generator": "umm-projects/cafu_generator#^1.0.0",
     "@umm/scripts": "umm-projects/scripts#^1.0.0"
   },
   "devDependencies": {}
