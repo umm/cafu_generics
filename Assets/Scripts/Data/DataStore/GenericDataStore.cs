@@ -15,9 +15,6 @@ namespace CAFU.Generics.Data.DataStore {
 
         TGenericEntity GetEntity<TGenericEntity>() where TGenericEntity : IGenericEntity;
 
-        [Obsolete("Please use overload method has no arguments.")]
-        TGenericEntity GetEntity<TGenericEntity>(bool checkStrict) where TGenericEntity : IGenericEntity;
-
     }
 
     public class GenericDataStore : ObservableLifecycleMonoBehaviour, IGenericDataStore {
@@ -59,11 +56,6 @@ namespace CAFU.Generics.Data.DataStore {
                 return this.ScriptableObjectGenericEntityList.OfType<TGenericEntity>().First();
             }
             throw new InvalidOperationException(string.Format("Type of '{0}' does not found in GenericDataStore", typeof(TGenericEntity).FullName));
-        }
-
-        [Obsolete("Please use overload method has no arguments.")]
-        public TGenericEntity GetEntity<TGenericEntity>(bool checkStrict) where TGenericEntity : IGenericEntity {
-            return this.GetEntity<TGenericEntity>();
         }
 
     }
