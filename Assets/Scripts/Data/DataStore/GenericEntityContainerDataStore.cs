@@ -77,5 +77,10 @@ namespace CAFU.Generics.Data.DataStore
 
             return ReferenceCountMap.Keys.OfType<TGenericEntity>();
         }
+
+        public static GenericEntityContainerDataStore CreateDefaultInstance()
+        {
+            return new DefaultFactory<DefaultResolver>().Create().Resolve();
+        }
     }
 }
