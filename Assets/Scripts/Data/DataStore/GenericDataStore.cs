@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using CAFU.Core.Data.DataStore;
+using CAFU.Core.Utility;
 using CAFU.Generics.Data.Entity;
-using CAFU.Generics.Domain.Repository;
 using JetBrains.Annotations;
 using UniRx;
 using UnityEngine;
@@ -13,7 +11,6 @@ namespace CAFU.Generics.Data.DataStore
     [PublicAPI]
     public interface IGenericDataStore : IDataStore
     {
-        TGenericEntity GetEntity<TGenericEntity>() where TGenericEntity : IGenericEntity;
     }
 
     [PublicAPI]
@@ -27,32 +24,34 @@ namespace CAFU.Generics.Data.DataStore
 
         private IEnumerable<IGenericEntity> ScriptableObjectGenericEntityList => scriptableObjectGenericEntityList;
 
+        private IDataStoreResolver<IGenericEntityContainerDataStore> DataStoreResolver { get; } = new DefaultFactory<GenericEntityContainerDataStore.DefaultResolver>().Create();
+
         protected override void OnAwake()
         {
             base.OnAwake();
-            GenericRepository.GenericDataStore = this;
+            foreach (var genericEntity in GenericEntityList)
+            {
+                DataStoreResolver.Resolve().Retain(genericEntity);
+            }
+            foreach (var scriptableObjectGenericEntity in ScriptableObjectGenericEntityList)
+            {
+                DataStoreResolver.Resolve().Retain(scriptableObjectGenericEntity);
+            }
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            foreach (var genericEntity in GenericEntityList)
+            {
+                DataStoreResolver.Resolve().Release(genericEntity);
+            }
+            foreach (var scriptableObjectGenericEntity in ScriptableObjectGenericEntityList)
+            {
+                DataStoreResolver.Resolve().Release(scriptableObjectGenericEntity);
+            }
             genericEntityList.Clear();
             scriptableObjectGenericEntityList.Clear();
-        }
-
-        public TGenericEntity GetEntity<TGenericEntity>() where TGenericEntity : IGenericEntity
-        {
-            if (GenericEntityList.Any(x => x is TGenericEntity))
-            {
-                return GenericEntityList.OfType<TGenericEntity>().First();
-            }
-
-            if (ScriptableObjectGenericEntityList.Any(x => x is TGenericEntity))
-            {
-                return ScriptableObjectGenericEntityList.OfType<TGenericEntity>().First();
-            }
-
-            throw new InvalidOperationException($"Type of '{typeof(TGenericEntity).FullName}' does not found in GenericDataStore");
         }
     }
 }

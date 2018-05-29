@@ -1,4 +1,5 @@
-﻿using CAFU.Core.Domain.UseCase;
+﻿using System.Collections.Generic;
+using CAFU.Core.Domain.UseCase;
 using CAFU.Generics.Data.Entity;
 using CAFU.Generics.Domain.Repository;
 using JetBrains.Annotations;
@@ -15,6 +16,8 @@ namespace CAFU.Generics.Domain.UseCase
         where TGenericEntity : IGenericEntity
     {
         TGenericEntity GetEntity();
+
+        IEnumerable<TGenericEntity> GetEntities();
     }
 
     [PublicAPI]
@@ -35,6 +38,11 @@ namespace CAFU.Generics.Domain.UseCase
         public TGenericEntity GetEntity()
         {
             return GenericRepository.GetEntity();
+        }
+
+        public IEnumerable<TGenericEntity> GetEntities()
+        {
+            return GenericRepository.GetEntities();
         }
     }
 }

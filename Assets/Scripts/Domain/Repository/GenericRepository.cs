@@ -1,4 +1,7 @@
-﻿using CAFU.Core.Domain.Repository;
+﻿using System.Collections.Generic;
+using CAFU.Core.Data.DataStore;
+using CAFU.Core.Domain.Repository;
+using CAFU.Core.Utility;
 using CAFU.Generics.Data.DataStore;
 using CAFU.Generics.Data.Entity;
 using JetBrains.Annotations;
@@ -15,25 +18,40 @@ namespace CAFU.Generics.Domain.Repository
         where TGenericEntity : IGenericEntity
     {
         TGenericEntity GetEntity();
+
+        IEnumerable<TGenericEntity> GetEntities();
     }
 
     [PublicAPI]
-    public class GenericRepository : IGenericRepository
-    {
-        public static IGenericDataStore GenericDataStore { protected get; set; }
-    }
-
-    [PublicAPI]
-    public class GenericRepository<TGenericEntity> : GenericRepository, IGenericRepository<TGenericEntity>
+    public class GenericRepository<TGenericEntity> : GenericRepository<TGenericEntity, GenericEntityContainerDataStore.DefaultResolver>
         where TGenericEntity : IGenericEntity
     {
-        public class Factory : DefaultRepositoryFactory<GenericRepository<TGenericEntity>>
+    }
+
+    [PublicAPI]
+    public class GenericRepository<TGenericEntity, TGenericEntityContainerDataStoreResolver> : IGenericRepository<TGenericEntity>
+        where TGenericEntity : IGenericEntity
+        where TGenericEntityContainerDataStoreResolver : IDataStoreResolver<IGenericEntityContainerDataStore>, new()
+    {
+        public class Factory : DefaultRepositoryFactory<GenericRepository<TGenericEntity, TGenericEntityContainerDataStoreResolver>>
         {
+            protected override void Initialize(GenericRepository<TGenericEntity, TGenericEntityContainerDataStoreResolver> instance)
+            {
+                base.Initialize(instance);
+                instance.DataStoreResolver = new DefaultFactory<TGenericEntityContainerDataStoreResolver>().Create();
+            }
         }
+
+        private IDataStoreResolver<IGenericEntityContainerDataStore> DataStoreResolver { get; set; }
 
         public TGenericEntity GetEntity()
         {
-            return GenericDataStore.GetEntity<TGenericEntity>();
+            return DataStoreResolver.Resolve().GetEntity<TGenericEntity>();
+        }
+
+        public IEnumerable<TGenericEntity> GetEntities()
+        {
+            return DataStoreResolver.Resolve().GetEntities<TGenericEntity>();
         }
     }
 }
