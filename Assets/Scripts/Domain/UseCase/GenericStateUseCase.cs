@@ -1,4 +1,5 @@
-﻿using CAFU.Core.Domain.UseCase;
+﻿using System;
+using CAFU.Core.Domain.UseCase;
 using CAFU.Generics.Domain.Model;
 using JetBrains.Annotations;
 using UniRx;
