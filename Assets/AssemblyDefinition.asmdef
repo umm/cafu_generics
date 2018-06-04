@@ -1,0 +1,13 @@
+{
+    "name": "umm@cafu_generics",
+    "references": [
+        "umm@cafu_core",
+        "umm@cafu_generator",
+        "umm@unirx",
+        "umm@unirx_observablelifecyclemonobehaviour"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

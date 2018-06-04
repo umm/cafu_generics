@@ -8,6 +8,7 @@
   },
   "scripts": {
     "umm:init": "umm-init",
+    "umm:generate_assembly_definition": "umm-generate_assembly_definition",
     "umm:module:install": "umm-module-install",
     "umm:module:uninstall": "umm-module-uninstall",
     "postinstall": "npm run --silent umm:module:install",
@@ -26,7 +27,9 @@
   "dependencies": {
     "@umm/cafu_core": "umm-projects/cafu_core#^2.0.0",
     "@umm/cafu_generator": "umm-projects/cafu_generator#^1.0.0",
-    "@umm/scripts": "umm-projects/scripts#^1.0.0"
+    "@umm/scripts": "umm-projects/scripts#^1.0.0",
+    "@umm/unirx": "umm-projects/unirx#^2.0.0",
+    "@umm/unirx_observablelifecyclemonobehaviour": "umm-projects/unirx_observablelifecyclemonobehaviour#^1.0.0"
   },
   "devDependencies": {}
 }
