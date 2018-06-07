@@ -86,9 +86,10 @@ namespace CAFU.Generics.Data.Entity {
         private static void OnCompilationFinished(string value, CompilerMessage[] messages) {
             EntityTypeList = new List<Type>();
             EntityTypeNameList = new List<string>();
-            Assembly
-                .GetAssembly(typeof(GenericEntity))
-                .GetTypes()
+            AppDomain
+                .CurrentDomain
+                .GetAssemblies()
+                .SelectMany(x => x.GetTypes())
                 // ScriptableObjectGenericEntity の継承型のうち、Generic 型でないモノを作成対象とみなす
                 .Where(x => x.IsSubclassOf(typeof(ScriptableObjectGenericEntity)) && !x.IsGenericType)
                 .ToList()
