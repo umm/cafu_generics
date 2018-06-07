@@ -1,0 +1,14 @@
+{
+    "name": "umm@cafu_generics-Editor",
+    "references": [
+        "umm@cafu_generics",
+        "umm@cafu_generator-Editor",
+        "umm@cafu_core"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
