@@ -4,6 +4,7 @@ using System.Linq;
 using CAFU.Core.Data.Entity;
 using JetBrains.Annotations;
 using UnityEngine;
+// ReSharper disable Unity.RedundantSerializeFieldAttribute
 
 #pragma warning disable 649
 
@@ -66,53 +67,72 @@ namespace CAFU.Generics.Data.Entity
     }
 
     [PublicAPI]
-    public class GenericEntity<TValue> : GenericEntity, IGenericEntity<TValue>
+    public class GenericEntity<TValue> : GenericEntity<TValue, TValue>
     {
-        [SerializeField] private TValue value;
+    }
 
-        public TValue Value
+    [PublicAPI]
+    public class GenericEntity<TValueInterface, TValueConcrete> : GenericEntity, IGenericEntity<TValueInterface>
+        where TValueConcrete : TValueInterface
+    {
+        [SerializeField] private TValueConcrete value;
+
+        public TValueInterface Value
         {
             get { return value; }
-            set { this.value = value; }
+            set { this.value = (TValueConcrete) value; }
         }
     }
 
     // GenericEntity<TValue> を継承する手もあるが、Inspector 上で Key/Value の並びが逆になってしまうので断念
     [PublicAPI]
-    public class GenericPairEntity<TKey, TValue> : GenericEntity, IGenericPairEntity<TKey, TValue>
+    public class GenericPairEntity<TKey, TValue> : GenericPairEntity<TKey, TValue, TKey, TValue>
     {
-        [SerializeField] private TKey key;
+    }
 
-        public TKey Key
+    [PublicAPI]
+    public class GenericPairEntity<TKeyInterface, TValueInterface, TKeyConcrete, TValueConcrete> : GenericEntity, IGenericPairEntity<TKeyInterface, TValueInterface>
+        where TKeyConcrete : TKeyInterface
+        where TValueConcrete : TValueInterface
+    {
+        [SerializeField] private TKeyConcrete key;
+
+        public TKeyInterface Key
         {
             get { return key; }
-            set { key = value; }
+            set { key = (TKeyConcrete) value; }
         }
 
-        [SerializeField] private TValue value;
+        [SerializeField] private TValueConcrete value;
 
-        public TValue Value
+        public TValueInterface Value
         {
             get { return value; }
-            set { this.value = value; }
+            set { this.value = (TValueConcrete) value; }
         }
 
         // ScriptableObjectGenericPairEntity<TKey, TValue>.DummyForAOT() と併せるために書いたが、こっちは要らないはず
         private void DummyForAOT()
         {
-            new GenericPairEntityList<ScriptableObjectGenericPairEntity<TKey, TValue>>().GetChildEntity((genericEntity) => true);
+            new GenericPairEntityList<ScriptableObjectGenericPairEntity<TKeyInterface, TValueInterface, TKeyConcrete, TValueConcrete>>().GetChildEntity((genericEntity) => true);
         }
     }
 
     [PublicAPI]
-    public class GenericListEntity<TValue> : GenericEntity, IGenericListEntity
+    public class GenericListEntity<TValue> : GenericListEntity<TValue, TValue>
     {
-        [SerializeField] private List<TValue> list;
+    }
 
-        public IList<TValue> List
+    [PublicAPI]
+    public class GenericListEntity<TValueInterface, TValueConcrete> : GenericEntity, IGenericListEntity
+        where TValueConcrete : TValueInterface
+    {
+        [SerializeField] private List<TValueConcrete> list;
+
+        public IList<TValueInterface> List
         {
-            get { return list; }
-            set { list = (List<TValue>) value; }
+            get { return list.Cast<TValueInterface>().ToList(); }
+            set { list = value.Cast<TValueConcrete>().ToList(); }
         }
     }
 
@@ -132,54 +152,74 @@ namespace CAFU.Generics.Data.Entity
     }
 
     [PublicAPI]
-    public class ScriptableObjectGenericEntity<TValue> : ScriptableObjectGenericEntity
+    public class ScriptableObjectGenericEntity<TValue> : ScriptableObjectGenericEntity<TValue, TValue>
     {
-        [SerializeField] private TValue value;
+    }
 
-        public TValue Value
+    [PublicAPI]
+    public class ScriptableObjectGenericEntity<TValueInterface, TValueConcrete> : ScriptableObjectGenericEntity, IGenericEntity<TValueInterface>
+        where TValueConcrete : TValueInterface
+    {
+        [SerializeField] private TValueConcrete value;
+
+        public TValueInterface Value
         {
             get { return value; }
-            set { this.value = value; }
+            set { this.value = (TValueConcrete) value; }
         }
     }
 
     // GenericEntity<TValue> を継承する手もあるが、Inspector 上で Key/Value の並びが逆になってしまうので断念
     [PublicAPI]
-    public class ScriptableObjectGenericPairEntity<TKey, TValue> : ScriptableObjectGenericEntity, IGenericPairEntity<TKey, TValue>
+    public class ScriptableObjectGenericPairEntity<TKey, TValue> : ScriptableObjectGenericPairEntity<TKey, TValue, TKey, TValue>
     {
-        [SerializeField] private TKey key;
+    }
 
-        public TKey Key
+    // GenericEntity<TValue> を継承する手もあるが、Inspector 上で Key/Value の並びが逆になってしまうので断念
+    [PublicAPI]
+    public class ScriptableObjectGenericPairEntity<TKeyInterface, TValueInterface, TKeyConcrete, TValueConcrete> : ScriptableObjectGenericEntity, IGenericPairEntity<TKeyInterface, TValueInterface>
+        where TKeyConcrete : TKeyInterface
+        where TValueConcrete : TValueInterface
+    {
+        [SerializeField] private TKeyConcrete key;
+
+        public TKeyInterface Key
         {
             get { return key; }
-            set { key = value; }
+            set { key = (TKeyConcrete) value; }
         }
 
-        [SerializeField] private TValue value;
+        [SerializeField] private TValueConcrete value;
 
-        public TValue Value
+        public TValueInterface Value
         {
             get { return value; }
-            set { this.value = value; }
+            set { this.value = (TValueConcrete) value; }
         }
 
         // enum を受け取るメソッドは呼び出しコードが存在しないと AOT コンパイラがコードを生成してくれない
         // See also: https://docs.unity3d.com/Manual/ScriptingRestrictions.html
         private void DummyForAOT()
         {
-            CreateInstance<ScriptableObjectGenericPairEntityList<ScriptableObjectGenericPairEntity<TKey, TValue>>>().GetChildEntity(Key);
+            CreateInstance<ScriptableObjectGenericPairEntityList<ScriptableObjectGenericPairEntity<TKeyInterface, TValueInterface, TKeyConcrete, TValueConcrete>>>().GetChildEntity(Key);
         }
     }
 
     [PublicAPI]
-    public class ScriptableObjectGenericListEntity<TValue> : ScriptableObjectGenericEntity, IGenericListEntity
+    public class ScriptableObjectGenericListEntity<TValue> : ScriptableObjectGenericListEntity<TValue, TValue>
     {
-        [SerializeField] private List<TValue> list;
+    }
 
-        public IList<TValue> List
+    [PublicAPI]
+    public class ScriptableObjectGenericListEntity<TValueInterface, TValueConcrete> : ScriptableObjectGenericEntity, IGenericListEntity<TValueInterface>
+        where TValueConcrete : TValueInterface
+    {
+        [SerializeField] private List<TValueConcrete> list;
+
+        public IList<TValueInterface> List
         {
-            get { return list; }
-            set { list = (List<TValue>) value; }
+            get { return list.Cast<TValueInterface>().ToList(); }
+            set { list = value.Cast<TValueConcrete>().ToList(); }
         }
     }
 
