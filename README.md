@@ -6,12 +6,12 @@
 ## Requirement
 
 * Unity 2017.1
-* [CAFU Core v2](https://github.com/umm-projects/cafu_core)
+* [CAFU Core v2](https://github.com/umm/cafu_core)
 
 ## Install
 
 ```shell
-npm install github:umm-projects/cafu_generics
+npm install github:umm/cafu_generics
 ```
 
 ## Usage

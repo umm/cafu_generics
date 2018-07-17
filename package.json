@@ -2,9 +2,9 @@
   "name": "@umm/cafu_generics",
   "version": "1.7.0",
   "description": "Handle generic data for CAFU",
-  "homepage": "https://github.com/umm-projects/cafu_generics",
+  "homepage": "https://github.com/umm/cafu_generics",
   "bugs": {
-    "url": "https://github.com/umm-projects/cafu_generics/issues"
+    "url": "https://github.com/umm/cafu_generics/issues"
   },
   "scripts": {
     "umm:init": "umm-init",
@@ -18,18 +18,18 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:umm-projects/cafu_generics"
+    "url": "git@github.com:umm/cafu_generics"
   },
   "files": [
     "Assets",
     "scripts"
   ],
   "dependencies": {
-    "@umm/cafu_core": "umm-projects/cafu_core#^2.0.0",
-    "@umm/cafu_generator": "umm-projects/cafu_generator#^1.0.0",
-    "@umm/scripts": "umm-projects/scripts#^1.0.0",
-    "@umm/unirx": "umm-projects/unirx#^2.0.0",
-    "@umm/unirx_observablelifecyclemonobehaviour": "umm-projects/unirx_observablelifecyclemonobehaviour#^1.0.0"
+    "@umm/cafu_core": "umm/cafu_core#^2.0.0",
+    "@umm/cafu_generator": "umm/cafu_generator#^1.0.0",
+    "@umm/scripts": "umm/scripts#^1.0.0",
+    "@umm/unirx": "umm/unirx#^2.0.0",
+    "@umm/unirx_observablelifecyclemonobehaviour": "umm/unirx_observablelifecyclemonobehaviour#^1.0.0"
   },
   "devDependencies": {}
 }
