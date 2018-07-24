@@ -142,7 +142,7 @@ namespace CAFU.Generics.Data.Entity
     }
 
     [PublicAPI]
-    public class GenericPairEntityList<TGenericPairEntity> : GenericEntityList<TGenericPairEntity> where TGenericPairEntity : IGenericPairEntity
+    public class GenericPairEntityList<TGenericPairEntity> : GenericEntityList<TGenericPairEntity>, IGenericPairEntityList<TGenericPairEntity> where TGenericPairEntity : IGenericPairEntity
     {
     }
 
