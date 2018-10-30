@@ -1,6 +1,7 @@
 {
     "name": "umm@cafu_generics-Tests-EditMode",
     "references": [
+        "umm@cafu_core",
         "umm@cafu_generics"
     ],
     "optionalUnityReferences": [
