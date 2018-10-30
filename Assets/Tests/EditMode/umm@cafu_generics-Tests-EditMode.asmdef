@@ -1,0 +1,14 @@
+{
+    "name": "umm@cafu_generics-Tests-EditMode",
+    "references": [
+        "umm@cafu_generics"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
