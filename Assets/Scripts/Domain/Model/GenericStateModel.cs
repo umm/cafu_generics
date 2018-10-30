@@ -99,11 +99,13 @@ namespace CAFU.Generics.Domain.Model
         public GenericStateModel()
         {
             State = new ReactiveProperty<TState>();
+            Initialize();
         }
 
         public GenericStateModel(TState initialValue)
         {
             State = new ReactiveProperty<TState>(initialValue);
+            Initialize();
         }
 
         private IList<TState> enumValueList;
