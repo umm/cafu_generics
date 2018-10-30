@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using CAFU.Core.Domain.Model;
 using JetBrains.Annotations;
 using UniRx;
@@ -62,22 +64,59 @@ namespace CAFU.Generics.Domain.Model
 
         public void Next()
         {
-            State.Value = (dynamic) State.Value + 1;
+            var type = typeof(TState);
+            if (type.IsEnum)
+            {
+                var currentIndex = enumValueList.IndexOf(State.Value);
+                if (enumValueList.Count > currentIndex + 1)
+                {
+                    State.Value = enumValueList[currentIndex + 1];
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("Cannot call Next() to non-enum typed GenericStateModel. Because iOS is not allow `dynamic' call.");
+            }
         }
 
         public void Previous()
         {
-            State.Value = (dynamic) State.Value - 1;
+            var type = typeof(TState);
+            if (type.IsEnum)
+            {
+                var currentIndex = enumValueList.IndexOf(State.Value);
+                if (currentIndex > 0)
+                {
+                    State.Value = enumValueList[currentIndex - 1];
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("Cannot call Previous() to non-enum typed GenericStateModel. Because iOS is not allow `dynamic' call.");
+            }
         }
 
         public GenericStateModel()
         {
             State = new ReactiveProperty<TState>();
+            Initialize();
         }
 
         public GenericStateModel(TState initialValue)
         {
             State = new ReactiveProperty<TState>(initialValue);
+            Initialize();
+        }
+
+        private IList<TState> enumValueList;
+
+        private void Initialize()
+        {
+            var type = typeof(TState);
+            if (type.IsEnum)
+            {
+                enumValueList = new List<TState>(Enum.GetValues(type).OfType<TState>());
+            }
         }
     }
 }
