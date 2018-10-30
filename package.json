@@ -31,5 +31,7 @@
     "@umm/unirx": "umm/unirx#^2.0.0",
     "@umm/unirx_observablelifecyclemonobehaviour": "umm/unirx_observablelifecyclemonobehaviour#^1.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@umm/extra_unirx": "umm/extra_unirx#^1.0.0"
+  }
 }
